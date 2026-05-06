@@ -1,129 +1,109 @@
 # ⚡ PULSE_NET
 
-> /// ALGORITHMIC TIME-DECAY FEED /// SYSTEM STATUS: STABLE ///
+> /// ALGORITHMIC TIME-DECAY FEED /// SYSTEM STATUS: NOMINAL ///
 
-**PULSE_NET** is a full-stack, real-time social networking platform
-built around a dynamic time-decay algorithm and a bold Web 1.0 /
-Neo-Brutalist interface.
+**[🟢 Live Link](https://pulse-net-y1p9.vercel.app/)**
 
-Instead of a boring chronological feed, Pulse intelligently ranks
-content by balancing engagement with recency --- keeping the network
-fast, relevant, and alive.
+**PULSE_NET** is a full-stack, real-time social networking platform architected around a dynamic time-decay heuristic and a highly stylized Web 1.0 / Neo-Brutalist user interface. 
 
-------------------------------------------------------------------------
+Bypassing traditional chronological sorting, Pulse implements a mathematical algorithm that balances user engagement with temporal degradation—ensuring high-velocity, relevant content propagation while allowing stale data to naturally exit the network.
 
-## 🚀 Core Features
+---
 
-### 🧠 Algorithmic Feed
+## 🚀 Core Architecture & Features
 
--   HackerNews-inspired ranking system powered by PostgreSQL\
--   Score formula: Score = (Likes × 2.0) / (Hours Elapsed + 1)
--   Prioritizes high-engagement, recent content
+### 🧠 Heuristic Time-Decay Sorting
+- Engineered a HackerNews-inspired ranking algorithm executed directly at the PostgreSQL database layer.
+- **Formula:** `$Score = (Likes * 2.0) / (Hours Elapsed + 1)`
+- Mathematically prioritizes high-engagement, volatile content over static historical data.
 
-### ⚡ Real-Time Interactions
+### ⚡ Full-Duplex Real-Time Synchronization
+- Leverages STOMP over WebSockets via Spring `SimpMessagingTemplate` for low-latency, bi-directional data broadcasting.
+- Enables instant state propagation of client interactions (likes, deletions, transmissions) across the network without HTTP polling.
 
--   WebSocket-powered updates using Spring SimpMessagingTemplate
--   Instant propagation of likes and activity (no refresh needed)
+### 🔐 Stateless Security Protocol
+- Implements robust JWT (JSON Web Token) authentication.
+- Features stateless authorization filters to secure and validate incoming requests to protected REST API endpoints.
 
-### 🔐 Stateless Authentication
+### 🎨 Neo-Brutalist Design System
+- Custom UI architecture built on Tailwind CSS v4.
+- Enforces strict design constraints: high-contrast structural borders, raw terminal aesthetics, and fluid mobile-first responsiveness.
 
--   JWT-based authentication
--   Secure, protected API routes
+### 🔊 Auditory UX (Web Audio API)
+- Integrates the browser's native Web Audio API to programmatically synthesize 8-bit auditory feedback.
+- Maps specific frequencies and waveforms to application state changes (UI clicks, network errors, data transmissions).
 
-### 🎨 Neo-Brutalist UI
+### ♾️ Performant Data Hydration
+- Implemented an `IntersectionObserver`-driven infinite scroll mechanism.
+- Utilizes cursor-based pagination for bottomless, memory-efficient data fetching from the Spring backend.
 
--   Tailwind CSS v4 with custom brutalist styling
--   Sharp contrasts, heavy borders, raw terminal aesthetics
-
-### 🔊 Sensory Feedback
-
--   Web Audio API integration
--   8-bit UI sounds for actions (clicks, errors, transmissions)
-
-### ♾️ Infinite Scroll
-
--   Cursor-based pagination
--   Implemented via IntersectionObserver for seamless data loading
-
-------------------------------------------------------------------------
+---
 
 ## 💻 Tech Stack
 
 ### Frontend (Client)
-
--   React (TypeScript) + Vite\
--   Tailwind CSS v4 (custom Neo-Brutalist theme)\
--   Lucide Icons\
--   Sonner (toast notifications)
+- React 18 + TypeScript (Vite Build System)
+- Tailwind CSS v4 (Custom Neo-Brutalist Theme)
+- Lucide Icons (SVG rendering)
+- Sonner (Optimized toast notifications)
 
 ### Backend (API)
-
--   Java 21 + Spring Boot 3.x\
--   Spring Security (JWT)\
--   Spring WebSockets\
--   Spring Data JPA / Hibernate
+- Java 21 + Spring Boot 3.x
+- Spring Security (JWT Provider)
+- Spring WebSockets (STOMP Protocol)
+- Spring Data JPA / Hibernate ORM
 
 ### Database
+- PostgreSQL (Fully normalized relational schema)
 
--   PostgreSQL (fully normalized schema)
-
-------------------------------------------------------------------------
+---
 
 ## 📂 Repository Structure
 
-Monorepo setup containing both frontend and backend:
+This is a monorepo setup containing decoupled frontend and backend architectures:
 
-PULSE_NET/ ├── pulse/ \# Spring Boot Backend API └── pulse-ui/ \#
-React + Vite Frontend
+```text
+PULSE_NET/
+├── pulse/             # Spring Boot Backend API
+└── pulse-ui/          # React + Vite Frontend
+🛠️ Local Development Setup
+1️⃣ Database Initialization
+Ensure a local instance of PostgreSQL is running on port 5432.
 
-------------------------------------------------------------------------
+SQL
 
-## 🛠️ Local Setup & Installation
+CREATE DATABASE pulse_db;
+2️⃣ Backend Execution
+Open a terminal in the pulse/ directory and configure your application.properties with your local database credentials.
 
-### 1️⃣ Database Setup
-
--   Ensure PostgreSQL is running on port 5432
--   Create a database: CREATE DATABASE pulse_db;
-
-------------------------------------------------------------------------
-
-### 2️⃣ Backend Setup
+Bash
 
 cd pulse
+mvn clean install
+mvn spring-boot:run
+The API server will initialize on http://localhost:8080.
 
--   Configure application.properties with your database credentials
+3️⃣ Frontend Execution
+Open a new terminal session in the pulse-ui/ directory.
 
-mvn clean install mvn spring-boot:run
+Bash
 
-Backend runs on: http://localhost:8080
+cd pulse-ui
+npm install
+npm run dev
+The client application will initialize on http://localhost:5173.
 
-------------------------------------------------------------------------
-
-### 3️⃣ Frontend Setup
-
-cd pulse-ui npm install npm run dev
-
-Frontend runs on: http://localhost:5173
-
-------------------------------------------------------------------------
-
-## 📜 License
-
-This project is licensed under the MIT License.\
+📜 License
+This project is licensed under the MIT License.
 See the LICENSE file for details.
 
-------------------------------------------------------------------------
+🧩 Architectural Philosophy
+Pulse represents a departure from static engagement loops. It is a deterministic, system-driven platform where:
 
-## 🧩 Philosophy
+Visibility is mathematically earned through network interaction.
 
-Pulse isn't trying to be another "engagement trap" social app.
+Content naturally degrades as temporal limits are reached.
 
-It's a system-driven platform where: - visibility is earned through
-interaction - content naturally decays over time - and the feed stays in
-motion --- always
+The data stream remains in continuous motion.
 
-------------------------------------------------------------------------
-
-## 👨‍💻 Author
-
-Built with intent, not templates.
+👨‍💻 Built with intent, not templates.
