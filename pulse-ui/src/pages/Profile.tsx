@@ -13,7 +13,7 @@ export default function Profile() {
   useEffect(() => {
     const fetchMyPosts = async () => {
       try {
-        const response = await api.get('/posts/trending?page=0&size=50');
+        const response = await api.get('/api/posts/trending?page=0&size=50');
         const filteredPosts = response.data.content.filter(
           (post: any) => post.userEmail === currentUserEmail
         );

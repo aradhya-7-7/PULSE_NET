@@ -30,7 +30,7 @@ export default function PostCard({ post, currentUserEmail, onDelete }: PostProps
     playBeep(newLikedState ? 600 : 300, 'square', 0.1);
 
     try {
-      await api.post(`/posts/${post.id}/like`);
+      await api.post(`/api/posts/${post.id}/like`);
     } catch (err) {
       setIsLiked(!newLikedState);
       setLikes(post.likesCount);
@@ -40,7 +40,7 @@ export default function PostCard({ post, currentUserEmail, onDelete }: PostProps
   const handleDelete = async () => {
     if (confirm("Delete this retro post?")) {
       try {
-        await api.delete(`/posts/${post.id}`);
+        await api.delete(`/api/posts/${post.id}`);
         onDelete(post.id);
       } catch (err) {
         alert("Failed to delete");
