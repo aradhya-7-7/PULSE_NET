@@ -14,7 +14,7 @@ export default function Auth() {
     e.preventDefault();
     try {
       if (isLogin) {
-        const response = await api.post('/auth/login', { email, password });
+        const response = await api.post('api/auth/login', { email, password });
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('email', email);
         
@@ -22,7 +22,7 @@ export default function Auth() {
         toast.success("CONNECTION ESTABLISHED."); 
         navigate('/feed');
       } else {
-        await api.post('/auth/register', { email, password });
+        await api.post('api/auth/register', { email, password });
         
         playBeep(800, 'sine', 0.1);
         toast.success("IDENTITY FORGED. AWAITING LOGIN."); 
