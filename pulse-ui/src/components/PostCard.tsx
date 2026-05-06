@@ -78,9 +78,7 @@ const handleLike = async () => {
                 <MoreHorizontal size={16} className="sm:w-[18px] sm:h-[18px]" />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="border-4 border-black rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] font-mono min-w-[120px]">
-                <DropdownMenuItem className="cursor-pointer hover:bg-retro-blue focus:bg-retro-blue text-xs sm:text-sm py-2">
-                  <Edit2 size={14} className="mr-2" /> Edit
-                </DropdownMenuItem>
+
                 <DropdownMenuItem className="cursor-pointer hover:bg-retro-pink focus:bg-retro-pink text-black text-xs sm:text-sm py-2" onClick={handleDelete}>
                   <Trash2 size={14} className="mr-2" /> Delete
                 </DropdownMenuItem>
