@@ -4,7 +4,6 @@ import api from '../services/api';
 import PostCard from '../components/PostCard';
 import { playBeep } from '../utils/audio';
 import { toast } from 'sonner';
-import { API_URL } from '../config';
 
 export default function TrendingFeed() {
   const [posts, setPosts] = useState<any[]>([]);
@@ -37,7 +36,7 @@ export default function TrendingFeed() {
     else setLoadingMore(true);
 
     try {
-      const response = await api.get(`${API_URL}/api/posts/trending?page=${pageNumber}&size=10`); 
+      const response = await api.get(`/posts/trending?page=${pageNumber}&size=10`);
       
       setPosts(prevPosts => {
         if (pageNumber === 0) return response.data.content;
@@ -76,7 +75,7 @@ export default function TrendingFeed() {
     playBeep(800, 'sawtooth', 0.15);
 
     try {
-      await api.post('${API_URL}/api/posts', { content: newPost });
+      await api.post('/posts', { content: newPost });
       setNewPost("");
       toast.success("TRANSMISSION BROADCASTED.");
       
