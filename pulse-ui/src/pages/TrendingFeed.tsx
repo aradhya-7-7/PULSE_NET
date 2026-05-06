@@ -4,6 +4,7 @@ import api from '../services/api';
 import PostCard from '../components/PostCard';
 import { playBeep } from '../utils/audio';
 import { toast } from 'sonner';
+import { API_URL } from '../config';
 
 export default function TrendingFeed() {
   const [posts, setPosts] = useState<any[]>([]);
