@@ -36,7 +36,7 @@ export default function TrendingFeed() {
     else setLoadingMore(true);
 
     try {
-      const response = await api.get('/api/posts/trending?page=${pageNumber}&size=10');
+      const response = await api.get(`/api/posts/trending?page=${pageNumber}&size=10`);
       
       setPosts(prevPosts => {
         if (pageNumber === 0) return response.data.content;
