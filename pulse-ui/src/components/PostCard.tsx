@@ -31,7 +31,7 @@ const handleLike = async () => {
 
     try {
       // Use the 'api' instance here! No API_URL needed.
-      await api.post(`/posts/${post.id}/like`);
+      await api.post('/api/posts/${post.id}/like');
     } catch (err) {
       setIsLiked(!newLikedState);
       setLikes(post.likesCount);
@@ -42,7 +42,7 @@ const handleLike = async () => {
     if (confirm("Delete this retro post?")) {
       try {
         // Use the 'api' instance here too!
-        await api.delete(`/posts/${post.id}`);
+        await api.delete('/api/posts/${post.id}');
         onDelete(post.id);
       } catch (err) {
         alert("Failed to delete");
