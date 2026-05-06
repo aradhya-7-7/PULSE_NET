@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Heart, MoreHorizontal, Trash2, Edit2 } from 'lucide-react';
+import { Heart, MoreHorizontal, Trash2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import api from '../services/api';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
