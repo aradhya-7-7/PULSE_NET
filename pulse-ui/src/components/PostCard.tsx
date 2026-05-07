@@ -30,7 +30,6 @@ const handleLike = async () => {
     playBeep(newLikedState ? 600 : 300, 'square', 0.1);
 
     try {
-      // Use the 'api' instance here! No API_URL needed.
       await api.post(`/api/posts/${post.id}/like`);
     } catch (err) {
       setIsLiked(!newLikedState);
@@ -40,12 +39,13 @@ const handleLike = async () => {
 
   const handleDelete = async () => {
     if (confirm("Delete this retro post?")) {
+      // OPTIMISTIC DELETE: Remove from screen instantly
+      onDelete(post.id);
       try {
-        // Use the 'api' instance here too!
         await api.delete(`/api/posts/${post.id}`);
-        onDelete(post.id);
       } catch (err) {
-        alert("Failed to delete");
+        alert("Failed to delete. Syncing network stream.");
+        window.location.reload(); // Quick rollback if delete fails
       }
     }
   };

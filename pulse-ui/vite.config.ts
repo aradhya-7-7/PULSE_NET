@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 
+// Force TypeScript to accept the configuration by casting it 'as any'
 export default defineConfig({
   plugins: [
     react(),
@@ -13,4 +14,8 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-})
+  test: {
+    environment: 'jsdom',
+    globals: true
+  }
+} as any)

@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import PostCard from '../components/PostCard';
+import RetroLoader from '../components/RetroLoader';
 import { playBeep } from '../utils/audio';
 import { toast } from 'sonner';
 
@@ -73,19 +74,32 @@ export default function TrendingFeed() {
     if (!newPost.trim()) return;
 
     playBeep(800, 'sawtooth', 0.15);
+    const postContent = newPost;
+    setNewPost("");
+
+    // OPTIMISTIC UI UPDATE
+    const tempId = `temp-${Date.now()}`;
+    const currentUserEmail = localStorage.getItem('email') || 'Unknown';
+    const optimisticPost = {
+      id: tempId,
+      userId: currentUserEmail,
+      userEmail: currentUserEmail,
+      content: postContent,
+      createdAt: new Date().toISOString(),
+      likesCount: 0
+    };
+
+    setPosts(prev => [optimisticPost, ...prev]);
+    toast.success("TRANSMISSION BROADCASTED.");
 
     try {
-      await api.post('/api/posts', { content: newPost });
-      setNewPost("");
-      toast.success("TRANSMISSION BROADCASTED.");
-      
-      setPage(0);
-      setHasMore(true);
-      if (page === 0) {
-          fetchTrending(0); 
-      }
+      await api.post('/api/posts', { content: postContent });
+      // Refresh silently in background to swap temp ID with real DB ID
+      fetchTrending(0); 
     } catch (error) {
       playBeep(150, 'square', 0.4);
+      // Rollback if API fails
+      setPosts(prev => prev.filter(p => p.id !== tempId));
       toast.error("TRANSMISSION FAILED: Network interference.");
     }
   };
@@ -139,9 +153,7 @@ export default function TrendingFeed() {
         {/* FEED LOOP */}
         <div className="flex flex-col gap-5 sm:gap-6">
           {loading ? (
-            <div className="text-center font-mono font-bold bg-black text-white p-4 border-4 border-white animate-pulse text-sm sm:text-base">
-              INITIALIZING_DATA_STREAM...
-            </div>
+            <RetroLoader text="INITIALIZING_DATA_STREAM..." />
           ) : (
             posts.map((post, index) => {
               if (posts.length === index + 1) {
@@ -167,11 +179,7 @@ export default function TrendingFeed() {
             })
           )}
           
-          {loadingMore && (
-            <div className="text-center font-mono font-bold bg-retro-pink text-black p-4 border-4 border-black animate-pulse shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-sm sm:text-base">
-              FETCHING_DEEPER_ARCHIVES...
-            </div>
-          )}
+          {loadingMore && <RetroLoader text="FETCHING_DEEPER_ARCHIVES..." />}
 
           {!hasMore && posts.length > 0 && (
             <div className="text-center font-mono font-bold text-gray-500 mt-2 sm:mt-4 border-t-4 border-black pt-4 text-sm sm:text-base">

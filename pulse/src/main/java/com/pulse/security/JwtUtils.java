@@ -11,24 +11,34 @@ import java.util.Date;
 
 @Component
 public class JwtUtils {
-    // A permanent, hardcoded 256-bit secret key (for local development)
     private static final String SECRET = "PulseSocialPlatformSecretKeyThatIsVeryLongAndSecure1234567890!";
     private static final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
     
     private static final long EXPIRATION_TIME = 86400000; // 24 hours
 
-    public String generateToken(String email) {
+    // New generation method that properly embeds the role into the token payload
+    public String generateToken(String email, String role) {
         return Jwts.builder()
                 .setSubject(email)
+                .claim("role", role) // <--- THIS MAKES GOD MODE WORK
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
+    
+    // Overloaded generation method so your AuthController doesn't break
+    public String generateToken(String email) {
+        return generateToken(email, "ROLE_USER");
+    }
 
     public String extractEmail(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build()
-                .parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
@@ -42,7 +52,12 @@ public class JwtUtils {
     }
 
     private boolean isTokenExpired(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build()
-                .parseClaimsJws(token).getBody().getExpiration().before(new Date());
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getExpiration()
+                .before(new Date());
     }
 }

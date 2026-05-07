@@ -3,15 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { playBeep, playWarningSound } from '../utils/audio';
 import { toast } from "sonner";
+import RetroLoader from '../components/RetroLoader';
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true); // Lock the UI and show the loader
+    
     try {
       if (isLogin) {
         const response = await api.post('api/auth/login', { email, password });
@@ -40,6 +44,8 @@ export default function Auth() {
       } else {
          toast.error("SYSTEM MALFUNCTION: Please try again.");
       }
+    } finally {
+      setIsLoading(false); // Restore the UI regardless of success or failure
     }
   };
 
@@ -90,57 +96,66 @@ export default function Auth() {
           {isLogin ? 'ENTER CREDENTIALS' : 'CREATE IDENTITY'}
         </p>
         
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:gap-5">
-          <div className="relative">
-            <span className="absolute left-3 top-3.5 font-mono font-bold text-gray-400">&gt;</span>
-            <input 
-              type="email" 
-              placeholder="EMAIL_ADDRESS" 
-              required 
-              className="w-full border-4 border-black p-3 pl-8 text-sm sm:text-base font-mono placeholder:text-gray-400 focus:outline-none focus:ring-4 focus:ring-retro-pink shadow-[inset_4px_4px_0px_0px_rgba(0,0,0,0.1)] transition-all bg-gray-50 focus:bg-white" 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
-            />
+        {isLoading ? (
+          <div className="py-8 sm:py-12 border-4 border-black shadow-[inset_4px_4px_0px_0px_rgba(0,0,0,0.1)] bg-gray-50">
+            <RetroLoader text={isLogin ? "AUTHENTICATING_USER..." : "FORGING_IDENTITY..."} />
           </div>
+        ) : (
+          <>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:gap-5">
+              <div className="relative">
+                <span className="absolute left-3 top-3.5 font-mono font-bold text-gray-400">&gt;</span>
+                <input 
+                  type="email" 
+                  placeholder="EMAIL_ADDRESS" 
+                  required 
+                  className="w-full border-4 border-black p-3 pl-8 text-sm sm:text-base font-mono placeholder:text-gray-400 focus:outline-none focus:ring-4 focus:ring-retro-pink shadow-[inset_4px_4px_0px_0px_rgba(0,0,0,0.1)] transition-all bg-gray-50 focus:bg-white" 
+                  value={email} 
+                  onChange={(e) => setEmail(e.target.value)} 
+                />
+              </div>
 
-          <div className="relative">
-            <span className="absolute left-3 top-3.5 font-mono font-bold text-gray-400">*</span>
-            <input 
-              type="password" 
-              placeholder="PASSWORD" 
-              required 
-              className="w-full border-4 border-black p-3 pl-8 text-sm sm:text-base font-mono placeholder:text-gray-400 focus:outline-none focus:ring-4 focus:ring-retro-pink shadow-[inset_4px_4px_0px_0px_rgba(0,0,0,0.1)] transition-all bg-gray-50 focus:bg-white" 
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
-            />
-          </div>
+              <div className="relative">
+                <span className="absolute left-3 top-3.5 font-mono font-bold text-gray-400">*</span>
+                <input 
+                  type="password" 
+                  placeholder="PASSWORD" 
+                  required 
+                  className="w-full border-4 border-black p-3 pl-8 text-sm sm:text-base font-mono placeholder:text-gray-400 focus:outline-none focus:ring-4 focus:ring-retro-pink shadow-[inset_4px_4px_0px_0px_rgba(0,0,0,0.1)] transition-all bg-gray-50 focus:bg-white" 
+                  value={password} 
+                  onChange={(e) => setPassword(e.target.value)} 
+                />
+              </div>
 
-          <button 
-            type="submit" 
-            className="group relative bg-retro-green border-4 border-black p-3 sm:p-4 text-sm sm:text-base font-mono font-black uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all active:translate-y-1 active:shadow-none mt-2 overflow-hidden"
-          >
-            <span className="relative z-10 group-hover:text-white transition-colors">
-              {isLogin ? 'Access Mainframe' : 'Establish Connection'}
-            </span>
-            <div className="absolute inset-0 bg-black w-0 group-hover:w-full transition-all duration-300 ease-out z-0"></div>
-          </button>
-        </form>
+              <button 
+                type="submit" 
+                className="group relative bg-retro-green border-4 border-black p-3 sm:p-4 text-sm sm:text-base font-mono font-black uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all active:translate-y-1 active:shadow-none mt-2 overflow-hidden"
+              >
+                <span className="relative z-10 group-hover:text-white transition-colors">
+                  {isLogin ? 'Access Mainframe' : 'Establish Connection'}
+                </span>
+                <div className="absolute inset-0 bg-black w-0 group-hover:w-full transition-all duration-300 ease-out z-0"></div>
+              </button>
+            </form>
 
-        <div className="relative mt-6 sm:mt-8">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t-4 border-black border-dashed"></div>
-          </div>
-          <div className="relative flex justify-center text-xs sm:text-sm">
-            <span className="bg-white px-2 font-mono font-bold text-gray-500">OR</span>
-          </div>
-        </div>
+            <div className="relative mt-6 sm:mt-8">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t-4 border-black border-dashed"></div>
+              </div>
+              <div className="relative flex justify-center text-xs sm:text-sm">
+                <span className="bg-white px-2 font-mono font-bold text-gray-500">OR</span>
+              </div>
+            </div>
 
-        <button 
-          onClick={() => setIsLogin(!isLogin)} 
-          className="mt-5 sm:mt-6 w-full bg-white border-4 border-black p-2 text-sm sm:text-base font-mono font-bold uppercase hover:bg-retro-yellow shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all active:translate-y-1 active:shadow-none"
-        >
-          {isLogin ? 'Register Instead' : 'Login Instead'}
-        </button>
+            <button 
+              type="button"
+              onClick={() => setIsLogin(!isLogin)} 
+              className="mt-5 sm:mt-6 w-full bg-white border-4 border-black p-2 text-sm sm:text-base font-mono font-bold uppercase hover:bg-retro-yellow shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all active:translate-y-1 active:shadow-none"
+            >
+              {isLogin ? 'Register Instead' : 'Login Instead'}
+            </button>
+          </>
+        )}
       </div>
 
       <style>{`
