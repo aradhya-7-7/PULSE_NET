@@ -1,8 +1,12 @@
 import axios from 'axios';
 
+// Automatically use the live Render URL in production, but use localhost for local testing!
+const IS_DEVELOPMENT = import.meta.env.MODE === 'development';
+const LIVE_BACKEND_URL = 'https://pulse-net-s4f8.onrender.com';
+const LOCAL_BACKEND_URL = 'http://localhost:8080';
+
 const api = axios.create({
-  // STRICT LOCALHOST OVERRIDE: Ignore .env during local testing
-  baseURL: 'http://localhost:8080', 
+  baseURL: IS_DEVELOPMENT ? LOCAL_BACKEND_URL : LIVE_BACKEND_URL, 
   headers: {
     'Content-Type': 'application/json',
   },
