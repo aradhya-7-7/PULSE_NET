@@ -53,12 +53,21 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-       configuration.setAllowedOrigins(Arrays.asList(
-            "http://localhost:5173", 
-            "http://localhost:5174", 
-            "https://pulse-net-y1p9.vercel.app"
+        
+        // 1. USE PATTERNS: This catches localhost and EVERY Vercel branch/preview URL
+        configuration.setAllowedOriginPatterns(Arrays.asList(
+            "http://localhost:*", 
+            "https://*.vercel.app",
+            "https://pulse-net-y1p9.vercel.app" // Explicit main domain just to be safe
         ));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        
+        // 2. ALLOW METHODS: Explicitly allow OPTIONS for the preflight check
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        
+        // 3. ALLOW ALL HEADERS: Browsers sneak in weird headers, let them all through
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        
+        // 4. ALLOW CREDENTIALS: Required for JWTs/cookies
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
