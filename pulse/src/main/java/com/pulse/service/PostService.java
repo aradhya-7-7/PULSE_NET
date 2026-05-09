@@ -14,6 +14,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -38,9 +40,9 @@ public class PostService {
         
         return results.map(row -> {
             // Shifted index: row[4] is now created_at because row[2] is email
-            java.time.LocalDateTime createdAt = (row[4] instanceof java.sql.Timestamp) 
-                ? ((java.sql.Timestamp) row[4]).toLocalDateTime() 
-                : (java.time.LocalDateTime) row[4];
+            LocalDateTime createdAt = (row[4] instanceof Timestamp) 
+                ? ((Timestamp) row[4]).toLocalDateTime() 
+                : (LocalDateTime) row[4];
 
             return new PostResponseDTO(
                 (UUID) row[0],                 // id
@@ -68,7 +70,8 @@ public class PostService {
                 user.getId(), 
                 user.getEmail(), // Injected email
                 post.getContent(), 
-                post.getCreatedAt() != null ? post.getCreatedAt().toLocalDateTime() : new Timestamp(System.currentTimeMillis()).toLocalDateTime(), 
+                // Convert Instant to UTC LocalDateTime safely
+                post.getCreatedAt() != null ? LocalDateTime.ofInstant(post.getCreatedAt(), ZoneOffset.UTC) : LocalDateTime.now(ZoneOffset.UTC), 
                 0
         );
     }
@@ -114,7 +117,8 @@ public class PostService {
                 post.getUser().getId(), 
                 post.getUser().getEmail(), // Injected email
                 post.getContent(), 
-                post.getCreatedAt().toLocalDateTime(), 
+                // Convert Instant to UTC LocalDateTime safely
+                LocalDateTime.ofInstant(post.getCreatedAt(), ZoneOffset.UTC), 
                 likesCount 
         );
     }
