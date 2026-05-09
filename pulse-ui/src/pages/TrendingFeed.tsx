@@ -5,6 +5,7 @@ import PostCard from '../components/PostCard';
 import RetroLoader from '../components/RetroLoader';
 import { playBeep } from '../utils/audio';
 import { toast } from 'sonner';
+import { Zap } from 'lucide-react';
 
 export default function TrendingFeed() {
   const [posts, setPosts] = useState<any[]>([]);
@@ -134,18 +135,26 @@ export default function TrendingFeed() {
       <div className="w-full max-w-2xl flex flex-col gap-8">
         
         {/* POST CREATION FORM */}
-        <form onSubmit={handlePostSubmit} className="bg-retro-blue border-4 border-black p-3 sm:p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col gap-3">
-          <label className="font-mono font-bold text-black uppercase text-sm sm:text-base">Post a thought to the network:</label>
+<form onSubmit={handlePostSubmit} className="bg-retro-blue border-4 border-black p-4 sm:p-5 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col gap-4 relative overflow-hidden">
+          {/* Decorative structural background element */}
+          <div className="absolute top-0 right-0 w-16 h-16 bg-black opacity-10 rotate-12 translate-x-8 -translate-y-8 pointer-events-none"></div>
+
+          <label className="font-mono font-black text-black uppercase text-sm sm:text-base flex items-center gap-2">
+            <span className="bg-black text-red-600 px-2 py-0.5 text-xs animate-pulse">REC ●</span>
+            Post a thought to the network:
+          </label>
+          
           <textarea 
-            className="w-full border-4 border-black p-3 font-sans resize-none focus:outline-none focus:ring-4 focus:ring-retro-pink shadow-[inset_4px_4px_0px_0px_rgba(0,0,0,0.1)] text-sm sm:text-base"
+            className="w-full border-4 border-black p-3 font-mono text-sm sm:text-base resize-none focus:outline-none focus:ring-0 focus:bg-retro-yellow/20 bg-white shadow-[inset_4px_4px_0px_0px_rgba(0,0,0,0.1)] transition-colors"
             rows={3}
-            placeholder="What's happening?"
+            placeholder="> Type transmission here..."
             value={newPost}
             onChange={(e) => setNewPost(e.target.value)}
           />
-          <div className="flex justify-end">
-            <button type="submit" className="w-full sm:w-auto bg-retro-yellow border-4 border-black px-6 py-2 sm:py-2 font-mono font-bold uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all active:translate-y-1 active:shadow-none text-sm">
-              Transmit [Enter]
+          
+          <div className="flex justify-end mt-1">
+            <button type="submit" className="w-full sm:w-auto bg-retro-pink hover:bg-retro-yellow border-4 border-black px-6 py-3 font-mono font-black uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all active:translate-y-1 active:shadow-none text-sm flex items-center justify-center gap-2">
+              <Zap size={18} fill="currentColor" /> Transmit [Enter]
             </button>
           </div>
         </form>
