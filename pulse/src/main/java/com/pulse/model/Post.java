@@ -3,7 +3,7 @@ package com.pulse.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import java.sql.Timestamp;
+import java.time.Instant; // <-- 1. UPGRADED IMPORT
 import java.util.List;
 import java.util.UUID;
 
@@ -24,9 +24,8 @@ public class Post {
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private Timestamp createdAt;
+    private Instant createdAt; // <-- 2. UPGRADED DATATYPE
 
-    // ADD THIS: When a post is deleted, delete all associated likes automatically
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes;
 }
