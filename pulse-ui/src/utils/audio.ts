@@ -1,5 +1,19 @@
 const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
 
+// --- NEW: 8-Bit Distortion Curve Generator ---
+// The higher the amount, the crunchier the sound. 50 is a solid retro fuzz.
+const makeDistortionCurve = (amount: number = 50) => {
+  const k = typeof amount === 'number' ? amount : 50;
+  const n_samples = 44100;
+  const curve = new Float32Array(n_samples);
+  const deg = Math.PI / 180;
+  for (let i = 0; i < n_samples; ++i) {
+    const x = (i * 2) / n_samples - 1;
+    curve[i] = ((3 + k) * x * 20 * deg) / (Math.PI + k * Math.abs(x));
+  }
+  return curve;
+};
+
 // Retro console-style beep generator
 export const playBeep = (
   frequency = 440,
@@ -17,6 +31,11 @@ export const playBeep = (
   filter.type = 'lowpass';
   filter.frequency.value = 1800;
 
+  // --- NEW: The Distortion Pedal ---
+  const distortion = audioCtx.createWaveShaper();
+  distortion.curve = makeDistortionCurve(100); // 100 adds a heavy, crunchy fuzz
+  distortion.oversample = 'none'; // 'none' leaves in raw digital artifacts!
+
   oscillator.type = type;
 
   // Quantized frequency = more 8-bit feel
@@ -33,16 +52,19 @@ export const playBeep = (
     audioCtx.currentTime + duration
   );
 
-  // Sharp arcade envelope
-  gainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
+  // Sharp arcade envelope (Boosted by 200%)
+  const boostedVolume = volume * 3; 
+  gainNode.gain.setValueAtTime(boostedVolume, audioCtx.currentTime);
 
   gainNode.gain.exponentialRampToValueAtTime(
     0.0001,
     audioCtx.currentTime + duration
   );
 
+  // --- NEW ROUTING: Add distortion into the signal chain ---
   oscillator.connect(filter);
-  filter.connect(gainNode);
+  filter.connect(distortion);    // Filter feeds into Distortion
+  distortion.connect(gainNode);  // Distortion feeds into Gain
   gainNode.connect(audioCtx.destination);
 
   oscillator.start();
@@ -99,6 +121,11 @@ export const playJumpSound = () => {
 
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
+  
+  // --- NEW: Distort the jump sound too! ---
+  const distortion = audioCtx.createWaveShaper();
+  distortion.curve = makeDistortionCurve(80); 
+  distortion.oversample = 'none';
 
   osc.type = 'square';
 
@@ -109,14 +136,16 @@ export const playJumpSound = () => {
     audioCtx.currentTime + 0.12
   );
 
-  gain.gain.setValueAtTime(0.07, audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.21, audioCtx.currentTime);
 
   gain.gain.exponentialRampToValueAtTime(
     0.0001,
     audioCtx.currentTime + 0.12
   );
 
-  osc.connect(gain);
+  // --- NEW ROUTING ---
+  osc.connect(distortion);
+  distortion.connect(gain);
   gain.connect(audioCtx.destination);
 
   osc.start();

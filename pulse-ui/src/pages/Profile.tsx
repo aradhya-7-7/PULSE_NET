@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import PostCard from '../components/PostCard';
+import { generateUsername } from "../utils/nameGenerator";
 
 export default function Profile() {
   const [myPosts, setMyPosts] = useState<any[]>([]);
@@ -63,8 +64,11 @@ export default function Profile() {
           <h1 className="text-2xl sm:text-3xl font-mono font-black text-black uppercase tracking-tight break-all">
             User Profile
           </h1>
-          <p className="font-mono text-xs sm:text-sm font-bold bg-black text-retro-green inline-block px-2 sm:px-3 py-1 border-2 border-black mt-2 self-center sm:self-start break-all">
-            ID: {currentUserEmail}
+<p className="font-mono text-xs sm:text-sm font-bold bg-black text-retro-green inline-block px-2 sm:px-3 py-1 border-2 border-black mt-2 self-center sm:self-start break-all">
+            ALIAS: {generateUsername(currentUserEmail)}
+          </p>
+          <p className="font-mono text-[10px] sm:text-xs font-bold text-gray-500 mt-1 self-center sm:self-start break-all uppercase">
+            SECURE_ID: {currentUserEmail.split('@')[0]}
           </p>
           <p className="font-mono text-sm mt-3 font-bold">
             Status: <span className="text-green-700 animate-pulse">ONLINE</span>
